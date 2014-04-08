@@ -36,24 +36,12 @@ namespace PluginLiquidHarvester
     {
         public override string Name { get { return "LiquidHarvester"; } }
         public override string Author { get { return "LiquidAtoR"; } }
-        public override Version Version { get { return new Version(1,0,0,0); } }
-        public override string ButtonText { get { return "Settings"; } }
-        public override bool WantButton { get { return false; } }
+        public override Version Version { get { return new Version(1,0,0,1); } }
 
         private bool _init;
         private List<ulong> L_lIgnoreUntilHarvest = new List<ulong>();
 
         private TimeSpan L_timeLastLoot = TimeSpan.FromSeconds(0);
-
-        public void Log(String sText)
-        {
-            Logging.Write(Colors.DarkRed, "[" + Name + "] " + sText);
-        }
-
-        public void LogDebug(String sText)
-        {
-            Logging.WriteDiagnostic(Colors.DarkRed, "[" + Name + "] " + sText);
-        }
 
         public override void Initialize()
         {
