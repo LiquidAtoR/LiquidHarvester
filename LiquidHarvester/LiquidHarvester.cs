@@ -36,40 +36,35 @@ namespace PluginLiquidHarvester
     {
         public override string Name { get { return "LiquidHarvester"; } }
         public override string Author { get { return "LiquidAtoR"; } }
-        public override Version Version { get { return new Version(1,0,0,1); } }
+        public override Version Version { get { return new Version(1,0,0,2); } }
 
         private bool _init;
         private List<ulong> L_lIgnoreUntilHarvest = new List<ulong>();
 
         private TimeSpan L_timeLastLoot = TimeSpan.FromSeconds(0);
 
-        public override void Initialize()
-        {
-            if (_init) return;
-            base.OnEnable();
-            Logging.Write(LogLevel.Normal, Colors.DarkRed, "LiquidHarvester 1.0 ready for use...");
-            _init = true;
-        }
-		
         public override void Pulse()
         {
             if (!_init)
             {
+				base.OnEnable();
 				Lua.DoString("SetCVar('AutoLootDefault','1')");
                 Lua.Events.AttachEvent("LOOT_CLOSED", MobLooted);
                 Mount.OnMountUp += new EventHandler<MountUpEventArgs>(MountHandler);
-
+				Logging.Write(LogLevel.Normal, Colors.DarkRed, "LiquidHarvester 1.0 ready for use...");
                 _init = true;
             }
 
-            if (StyxWoW.Me.IsActuallyInCombat)
-                return;
-
-            if (!LootTargeting.LootMobs)
-                return;
-
-            if (StyxWoW.Me.NormalBagsFull || StyxWoW.Me.FreeNormalBagSlots <= 2)
-                return;
+			if (_init)
+				if (StyxWoW.Me.IsActuallyInCombat
+					|| !LootTargeting.LootMobs
+					|| StyxWoW.Me.NormalBagsFull
+					|| StyxWoW.Me.FreeNormalBagSlots <= 2
+					|| StyxWoW.Me.IsDead
+					|| StyxWoW.Me.IsGhost
+					) {
+					return;
+				}
 
             // Don't interrupt important bot activities
             if (BotPoi.Current.Type == PoiType.Corpse ||
